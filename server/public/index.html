@@ -1,0 +1,68 @@
+<html>
+
+<head>
+	<title>socket-io-web</title>
+
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		$(document).ready(function() {
+			var url = 'ws://'.concat(window.location.host);
+
+			$('#connect').click(function() {
+				var socket = io.connect(url, {transports: ['websocket'], 'force new connection': true, 'secure': true, query: 'device=web'});
+
+				socket.on('error', function(error) {
+					console.log('Error: '+error);
+					socket.disconnect();
+				});
+
+				$('#disconnect').click(function() {
+					socket.disconnect();
+
+					$('#status').text('Disconnected');
+
+					$('#connect').removeAttr('disabled');
+					$('#disconnect').attr('disabled', 'disabled');
+					$('#hello').attr('disabled', 'disabled');
+				});
+
+				socket.on('connect', function() {
+					$('#status').text('Connected');
+
+					$('#connect').attr('disabled', 'disabled');
+					$('#disconnect').removeAttr('disabled');
+					$('#helo').removeAttr('disabled');
+
+					socket.on('eloh', function(data) {
+						alert('eloh: '+JSON.stringify(data));
+					});
+
+					$('#helo').click(function() {
+						socket.emit('helo', {foo: 'bar'});
+					});
+				});
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<h2>socket-io-web</h2>
+	<div>
+		<strong>Status:</strong>
+		<span id="status">Disconnected</span>
+	</div>
+	<hr>
+	<div>
+		<h4>Connection</h4>
+		<button id="connect">Connect</button>
+		<button id="disconnect" disabled>Disconnect</button>
+	</div>
+	<div>
+		<h4>Send</h4>
+		<button id="helo" disabled>helo</button>
+	</div>
+</body>
+
+</html>
