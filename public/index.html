@@ -7,7 +7,7 @@
 	<script src="/socket.io/socket.io.js"></script>
 	<script>
 		$(document).ready(function() {
-			var url = 'ws://'.concat(window.location.host);
+			var url = 'wss://'.concat(window.location.host);
 
 			$('#connect').click(function() {
 				var socket = io.connect(url, {transports: ['websocket'], 'force new connection': true, 'secure': true, query: 'device=web'});
